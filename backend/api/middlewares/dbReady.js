@@ -1,9 +1,9 @@
-const { getDb, waitForDb } = require("../database/DatabaseManager"); // yolunu kendi projenle eşleştir
+const { getDb } = require("../database/DatabaseManager");
 
 async function dbReady(req, res, next) {
 
-    await waitForDb(); // eğer bağlı değilse hata fırlatır
-    next();  // bağlıysa devam
+    await getDb(); 
+    next();  
 
 }
 

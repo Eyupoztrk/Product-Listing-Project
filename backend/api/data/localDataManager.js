@@ -3,13 +3,22 @@ const path = require("path");
 
 let products = [];
 
+const filePath = path.join(__dirname, "../data/products.json");
+
 try {
-  const filePath = path.join(__dirname, "../data/products.json");
   const raw = fs.readFileSync(filePath);
   products = JSON.parse(raw);
-  console.log("🗃️ JSON yedek verisi yüklendi");
+  console.log("JSON backup data loaded");
 } catch (err) {
-  console.error("❌ JSON verisi yüklenemedi:", err.message);
+  console.error("Failed to load JSON data:", err.message);
+}
+
+function saveToFile() {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
+  } catch (err) {
+    console.error("Failed to save JSON data:", err.message);
+  }
 }
 
 module.exports = {
@@ -20,7 +29,16 @@ module.exports = {
   },
 
   add(newProduct) {
-    products.push(newProduct);
+    const index = products.findIndex(p => p.name === newProduct.name);
+
+    if (index !== -1) {
+      products[index] = { ...products[index], ...newProduct };
+    } else {
+      
+      products.push(newProduct);
+    }
+
+    saveToFile(); 
     return newProduct;
   }
 };

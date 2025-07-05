@@ -13,12 +13,13 @@ async function connect() {
       dbName: DB_NAME,
     });
 
-    console.log("✅ MongoDB connected");
+    console.log("MongoDB connected");
     useLocalFallback = false;
   } catch (err) {
-    console.error("❌ MongoDB bağlantısı başarısız:", err.message);
-    console.warn("🟡 Yedek JSON verisine geçiliyor...");
+    console.error("MongoDB connection failed:", err.message);
+    console.log("Switching to backup JSON data...");
     useLocalFallback = true;
+    console.log("Switched to backup JSON data...");
   }
 }
 

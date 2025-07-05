@@ -4,20 +4,20 @@ const productSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'Ürün adı zorunludur.'], 
+            required: [true, 'Product name is required'], 
             unique: true, 
             trim: true, 
         },
         popularityScore: {
             type: Number,
-            required: [true, 'Popülerlik puanı zorunludur.'],
-            min: [0, "Popülerlik puanı 0'dan küçük olamaz."],
-            max: [1, "Popülerlik puanı 1'den büyük olamaz (ör: 0.85)."],
+            required: [true, 'Popularity score is required'],
+            min: [0, "The popularity score cannot be less than 0"],
+            max: [1, "The popularity score cannot be greater than 1 (e.g. 0.85)"],
         },
         weight: {
             type: Number,
-            required: [true, 'Ağırlık zorunludur.'],
-            min: [0, "Ağırlık negatif olamaz."],
+            required: [true, 'Weight is required'],
+            min: [0, "Weight cannot be negative"],
         },
         images: {
             yellow: {
@@ -33,6 +33,7 @@ const productSchema = new mongoose.Schema(
                 required: true,
             },
         },
+        price: {type: Number}
     },
     {
         timestamps: true,

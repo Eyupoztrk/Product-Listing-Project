@@ -4,20 +4,32 @@ const ProductModel = require("../database/Models/ProductModel")
 const Response = require("../lib/Response");
 const Enum = require("../config/Enum");
 const CustomError = require("../lib/Error");
-
+const { getGoldPriceUSDPerGram } = require("../services/goldPrice");
 const DatabaseManager = require("../database/DatabaseManager");
 
-router.get("/", async (req, res) => {
 
+router.get("/", async (req, res) => {
     try {
         let products = await DatabaseManager.find({});
-        res.json(Response.successResponse(products, Enum.HTTP_CODES.ACCEPTED));
+        const goldPrice = await getGoldPriceUSDPerGram();
+
+        
+        const updatedProducts = await Promise.all(products.map(async (product) => {
+            const newPrice = (product.popularityScore + 1) * product.weight * goldPrice;
+            product.price = newPrice;
+
+            await DatabaseManager.add(product);
+
+            return product;
+        }));
+
+        res.json(Response.successResponse(updatedProducts, Enum.HTTP_CODES.ACCEPTED));
     }
     catch (err) {
-        res.json(Response.errorResponse(err, Enum.HTTP_CODES.BAD_REQUEST))
+        res.json(Response.errorResponse(err, Enum.HTTP_CODES.BAD_REQUEST));
     }
-
 });
+
 
 router.post("/add", async (req, res) => {
     try {
@@ -26,16 +38,18 @@ router.post("/add", async (req, res) => {
         if (!body.name)
             throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, Enum.RESPONSE_MESSAGES.BAD_REQUEST, "Name field is required");
 
+        const price = (body.popularityScore + 1) * body.weight * await getGoldPriceUSDPerGram();
 
         let product = new ProductModel({
             name: body.name,
             popularityScore: body.popularityScore,
             weight: body.weight,
-            images: body.images
+            images: body.images,
+            price: price
         });
 
-        const added= await DatabaseManager.add(product);
-        res.json(Response.successResponse(added,Enum.RESPONSE_MESSAGES.CREATED));
+        const added = await DatabaseManager.add(product);
+        res.json(Response.successResponse(added, Enum.RESPONSE_MESSAGES.CREATED));
 
     }
     catch (err) {
@@ -44,5 +58,7 @@ router.post("/add", async (req, res) => {
     }
 
 });
+
+
 
 module.exports = router;

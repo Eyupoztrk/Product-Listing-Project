@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const fs = require('fs'); // File System modülü, dosya işlemleri için kullanılır
+const fs = require('fs'); 
 
 let routes = fs.readdirSync(__dirname); 
 
