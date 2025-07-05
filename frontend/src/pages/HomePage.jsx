@@ -1,10 +1,9 @@
 // src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import { fetchProducts } from '../services/api';
-import ProductCard from '../components/ProductCard'; // ProductCard'ı import et
+import ProductCard from '../components/ProductCard'; 
 
 const HomePage = () => {
-    // ... (useState ve useEffect kodları aynı kalacak)
     const [products, setProducts] = useState([]);
 
 
@@ -14,7 +13,7 @@ const HomePage = () => {
                 const data = await fetchProducts();
                 setProducts(data);
             } catch (err) {
-                console.log("Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.", err);
+                console.log("Products could not be loaded. Please try again later.", err);
             }
         };
         getProducts();
@@ -23,8 +22,7 @@ const HomePage = () => {
 
     return (
         <div style={{ padding: '20px' }}>
-            <h1>Ürünlerimiz</h1>
-            {/* Ürünleri listeleyeceğimiz alan */}
+            <h1>Products</h1>
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {products.map(product => (
 

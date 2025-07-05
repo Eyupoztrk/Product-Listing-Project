@@ -1,6 +1,6 @@
 import React from 'react';
 import HomePage from './pages/HomePage';
-import './styles/main.css'; // Global stillerimizi import ediyoruz
+import './styles/main.css'; 
 
 function App() {
   return (
