@@ -6,24 +6,13 @@ const Enum = require("../config/Enum");
 const CustomError = require("../lib/Error");
 const { getGoldPriceUSDPerGram } = require("../services/goldPrice");
 const DatabaseManager = require("../database/DatabaseManager");
+const productController = require('../controller/productController');
 
 
 router.get("/", async (req, res) => {
     try {
-        let products = await DatabaseManager.find({});
-        const goldPrice = await getGoldPriceUSDPerGram();
-
-        
-        const updatedProducts = await Promise.all(products.map(async (product) => {
-            const newPrice = (product.popularityScore + 1) * product.weight * goldPrice;
-            product.price = newPrice;
-
-            await DatabaseManager.add(product);
-
-            return product;
-        }));
-
-        res.json(Response.successResponse(updatedProducts, Enum.HTTP_CODES.ACCEPTED));
+        const products = await productController.getAllProductsWithCalculatedPrice(req.query);
+        res.json(Response.successResponse(products, Enum.HTTP_CODES.ACCEPTED));
     }
     catch (err) {
         res.json(Response.errorResponse(err, Enum.HTTP_CODES.BAD_REQUEST));
