@@ -6,11 +6,21 @@ import '../styles/main.css';
 const HomePage = () => {
     const [products, setProducts] = useState([]);
 
+    const getQueryParamsFromURL = () => {
+        const params = new URLSearchParams(window.location.search);
+        const query = {};
 
+        for (const [key, value] of params.entries()) {
+            query[key] = value;
+        }
+
+        return query;
+    };
     useEffect(() => {
         const getProducts = async () => {
             try {
-                const data = await fetchProducts();
+                const query = getQueryParamsFromURL();
+                const data = await fetchProducts(query);
                 setProducts(data);
             } catch (err) {
                 console.log("Products could not be loaded. Please try again later.", err);
